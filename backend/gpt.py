@@ -1,7 +1,7 @@
 import base64
 import requests
 
-from keys import OPENAI_API_KEY
+from backend.keys import OPENAI_API_KEY
 
 # OpenAI API Key
 api_key = OPENAI_API_KEY
