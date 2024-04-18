@@ -4,13 +4,13 @@ import 'regenerator-runtime/runtime';
 import { useState, useRef } from "react";
 import { useEffect } from "react";
 import {Camera} from "react-camera-pro";
+// @ts-ignore
+import createSpeechServicesPonyfill from 'web-speech-cognitive-services';
+import SpeechRecognition, { useSpeechRecognition } from 'react-speech-recognition';
 
-// import { createSpeechlySpeechRecognition } from '@speechly/speech-recognition-polyfill';
-// import SpeechRecognition, { useSpeechRecognition } from 'react-speech-recognition';
+const SUBSCRIPTION_KEY = process.env.NEXT_PUBLIC_AZURE_SUBSCRIPTION_KEY;
+const REGION = 'eastus';
 
-// const appId = process.env.NEXT_PUBLIC_SPEECHLY_APP_ID as string;
-// const SpeechlySpeechRecognition = createSpeechlySpeechRecognition(appId);
-// SpeechRecognition.applyPolyfill(SpeechlySpeechRecognition);
 
 // export function tts(text: string) {
 //     const synth = window.speechSynthesis;
@@ -56,12 +56,28 @@ import {Camera} from "react-camera-pro";
 //     synth.speak(utterance)
 // }
 
+const { SpeechRecognition: AzureSpeechRecognition } = createSpeechServicesPonyfill({
+    credentials: {
+        region: REGION,
+        subscriptionKey: SUBSCRIPTION_KEY,
+    }
+});
+
+SpeechRecognition.applyPolyfill(AzureSpeechRecognition);
+
+window.navigator.mediaDevices.getUserMedia({ audio: true });
 export default function Page() {
+
     const camera = useRef(null);
     const [image, setImage] = useState<string | null>(null);
 
     const [width, setWidth] = useState<number>(1920);
-
+    const {
+        transcript,
+        listening,
+        resetTranscript,
+        browserSupportsSpeechRecognition
+    } = useSpeechRecognition();
     function handleWindowSizeChange() {
         setWidth(window.innerWidth);
     }
@@ -97,7 +113,7 @@ export default function Page() {
             })
             const text = await response.text();
             console.log(text)
-            
+
             const blobResponse = await fetch(`/api/tts?text=${encodeURIComponent(text)}`, {
                 method: 'POST',
             })
@@ -117,35 +133,35 @@ export default function Page() {
         run();
     }, [image])
 
-    // const handleListen = () => {
-    //     console.log("touched");
-    //     SpeechRecognition.startListening({ continuous: true });
-    // }
-    // const handleStop = () => {
-    //     console.log("released");
-    //     SpeechRecognition.stopListening();
-    //     // @ts-expect-error
-    //     setImage(camera.current ? camera.current.takePhoto() : null)
-    //     console.log(transcript);
-    // }
+    const handleListen = () => {
+        console.log("touched");
+        resetTranscript();
+        SpeechRecognition.startListening({
+            continuous: true,
+            language: 'en-US'
+        });
+    }
+    const handleStop = () => {
+        console.log("released");
+        SpeechRecognition.abortListening();
+        // @ts-expect-error
+        setImage(camera.current ? camera.current.takePhoto() : null)
+        console.log(transcript);
+    }
 
     return (
-        
+
         <div className='container'>
             <div className='fixed top-0 left-0 h-full w-full'
-                //  onTouchStart={handleListen}
-                onMouseDown={() => 
-                    // @ts-expect-error
-                    setImage(camera.current ? camera.current.takePhoto() : null)
-                }
-                //  onTouchEnd={handleStop}
-                //  onMouseDown={handleListen}
-                // onMouseUp={handleStop}
+                 onTouchStart={handleListen}
+                onTouchEnd={handleStop}
+                onMouseDown={handleListen}
+                onMouseUp={handleStop}
 
             >
                 <Camera ref={camera} facingMode={isMobile ? "environment" : "user"} errorMessages={{noCameraAccessible:"No Camera Accessible", permissionDenied:"Permission Denied"}}/>
             </div>
-            {/* <div className='fixed bottom-0 left-0 w-full bg-black text-white'>
+            <div className='fixed bottom-0 left-0 w-full bg-black text-white'>
                 <div className='flex justify-between'>
                     <div className='p-2'>
                         {transcript}
@@ -154,7 +170,7 @@ export default function Page() {
                         {listening ? 'Listening' : 'Not Listening'}
                     </div>
                 </div>
-            </div> */}
+            </div>
         </div>
 
     );
