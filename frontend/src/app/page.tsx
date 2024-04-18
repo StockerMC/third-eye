@@ -102,6 +102,7 @@ export default function Page() {
             window.URL.revokeObjectURL(audio.src);
             document.getElementsByClassName('container')[0].removeChild(audio)
         }
+        Array.from(document.getElementsByTagName('audio')).map(e => e.volume = 0)
         startRecording();
         // resetTranscript();
         // SpeechRecognition.startListening({
