@@ -2,7 +2,7 @@ import OpenAI from "openai";
 
 const openai = new OpenAI();
 
-export async function image_analysis(base64_data_url: string, question: string | null) {
+export async function image_analysis(base64_data_url: string, question: string ) {
     const default_question = 'What\'s in this image?'
 
     const response = await openai.chat.completions.create({
@@ -17,7 +17,7 @@ export async function image_analysis(base64_data_url: string, question: string |
             {
                 role: "user",
                 content: [
-                { type: "text", text: question || default_question },
+                { type: "text", text: question },
                 {
                     type: "image_url",
                     image_url: {

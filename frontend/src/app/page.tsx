@@ -89,6 +89,7 @@ export default function Page() {
 
     const handleListen = () => {
         console.log("touched");
+        document.getElementsByTagName('video')[0].style.filter = 'brightness(60%)'
         startRecording();
         // resetTranscript();
         // SpeechRecognition.startListening({
@@ -103,6 +104,7 @@ export default function Page() {
         // setImage(camera.current ? camera.current.takePhoto() : null)
         // console.log(transcript);
         stopRecording();
+        document.getElementsByTagName('video')[0].style.filter = 'none'
 
         async function run() {
             // if (!image) return;
@@ -146,7 +148,7 @@ export default function Page() {
 
     return (
 
-        <div className='container select-none'>
+        <div className='container select-none transition-all'>
             <div className='fixed top-0 left-0 h-full w-full'
                  onTouchStart={handleListen}
                 onTouchEnd={handleStop}
