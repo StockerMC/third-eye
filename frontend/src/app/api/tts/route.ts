@@ -11,10 +11,6 @@ export async function POST(request: Request) {
   
     headers.set("Content-Type", "audio/*");
 
-    // return Response.json({ 
-    //     response: response
-    // },)
-
     return new Response(
         response,
         {

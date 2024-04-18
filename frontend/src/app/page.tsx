@@ -22,8 +22,6 @@ export default function Page() {
         setIsMobile(hasTouchScreen);
     }, [])
 
-    // const [numberOfCameras, setNumberOfCameras] = useState(0);
-
     const setNumberOfCameras = (n: number) => {
         if (n == 2 || window.innerWidth < 700) {
             // @ts-ignore
@@ -36,7 +34,7 @@ export default function Page() {
     }
 
     const [changed, setChanged] = useState(false)
-    // const [changed, setChanged] = useState(false);
+
     useEffect(() => {
         if (changed) return;
         console.log(window.innerWidth);
@@ -50,65 +48,23 @@ export default function Page() {
         setChanged(true);
     }, [setIsMobile, changed]);
 
-    // const {
-    //     recording,
-    //     speaking,
-    //     transcribing,
-    //     transcript,
-    //     pauseRecording,
-    //     startRecording,
-    //     stopRecording,
-    //   } = useWhisper({
-    //     apiKey: process.env.NEXT_PUBLIC_OPENAI_API_KEY, // YOUR_OPEN_AI_TOKEN,
-    //     autoTranscribe: true,
-    //     streaming: true,
-    //     timeSlice: 1000
-    //   })
-  const {
+    const {
     transcript,
     listening,
     resetTranscript,
     browserSupportsSpeechRecognition,
-  } = useSpeechRecognition({
+    } = useSpeechRecognition({
     clearTranscriptOnListen: true,
     // @ts-ignore
-  });
+    });
 
-  const startRecording = SpeechRecognition.startListening;
-  const stopRecording = SpeechRecognition.stopListening
-  const recording = listening;
-
-    const [width, setWidth] = useState(1920);
-    const [value, setValue] = useState('')
-
-    useEffect(() => {
-        setWidth(window.innerWidth);
-        // if (window.innerWidth < 720) {
-        //     // @ts-ignore
-        //     camera.current.switchCamera('environment');
-        // } else {
-        //     // @ts-ignore
-        //     camera.current.switchCamera('user');
-        // }
-    }, [setWidth])
-
-
-    const videoReadyCallback = () => {
-        if (changed) return;
-        if (window.innerWidth < 720) {
-            // @ts-ignore
-            camera.current.switchCamera('environment');
-        } else {
-            // @ts-ignore
-            camera.current.switchCamera('user');
-        }
-        setChanged(true);
-    }
+    const startRecording = SpeechRecognition.startListening;
+    const stopRecording = SpeechRecognition.stopListening
+    const recording = listening;
 
     const handleListen = () => {
         console.log("touched");
         resetTranscript();
-        // if (recording) return;
         document.getElementsByTagName('video')[0].style.filter = 'brightness(60%)'
         if (audio) {
             audio.pause()
@@ -128,22 +84,12 @@ export default function Page() {
             continuous: true,
             language: 'en-US'
         });
-        // resetTranscript();
-        // SpeechRecognition.startListening({
-        //     continuous: true,
-        //     language: 'en-US'
-        // });
     }
     const handleStop = () => {
         console.log("released");
-        // SpeechRecognition.abortListening();
-        // // @ts-expect-error
-        // setImage(camera.current ? camera.current.takePhoto() : null)
-        // console.log(transcript);
         stopRecording();
 
         async function run() {
-            // if (!image) return;
             if (!camera.current) return;
             // @ts-ignore
             const image = camera.current.takePhoto();
@@ -156,16 +102,11 @@ export default function Page() {
             const question = transcript || default_question;
             resetTranscript();
             console.log("question", question);
-            // const res = await fetch(image);
-            // const blob = await res.blob();
-            // const file = new File([blob], 'image.jpeg', { type: 'image/jpeg' })
             const data = new FormData();
             data.append('image', image);
-            // console.log(data.entries())
-            // return
             const response = await fetch(`/api/image?question=${encodeURIComponent(question)}`, {
-            method: 'POST',
-            body: data
+                method: 'POST',
+                body: data
             })
             const text = await response.text();
             console.log(text);
@@ -176,13 +117,6 @@ export default function Page() {
             const blob = await blobResponse.blob();
             console.log(blob)
             const blobUrl = window.URL.createObjectURL(blob);
-            // const element = document.createElement('audio')
-            // console.log(element)
-            // document.getElementsByClassName('container')[0].appendChild(element);
-            // element.src = blobUrl;
-            // element.load();
-            // setAudio(element);
-            // element.play();
             const soundEffect = new Audio();
             soundEffect.autoplay = true;
             setAudio(soundEffect)
@@ -193,8 +127,6 @@ export default function Page() {
 
 
             soundEffect.onended = () => window.URL.revokeObjectURL(blobUrl);
-            // return element;
-            // todo window.URL.revokeObjectURL(url);
         }
         run();
       }
