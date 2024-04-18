@@ -5,6 +5,10 @@ from keys import OPENAI_API_KEY
 from blacksheep import FromFiles, post
 
 
+<<<<<<< HEAD:gpt.py
+from keys import OPENAI_API_KEY
+=======
+>>>>>>> 50c26723e8e31b5d2d946536498737a71d02e4e9:backend/gpt.py
 
 # OpenAI API Key
 api_key = OPENAI_API_KEY
