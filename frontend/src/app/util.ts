@@ -4,7 +4,7 @@ const openai = new OpenAI();
 
 export async function image_analysis(base64_data_url: string, question: string | null) {
     const default_question = 'What\'s in this image?'
-
+    console.log("wefiofw: ", question || default_question);
     const response = await openai.chat.completions.create({
         model: "gpt-4-turbo",
         // max_tokens: 200,
@@ -12,7 +12,7 @@ export async function image_analysis(base64_data_url: string, question: string |
             {
                 "role": "system",
                 // "content": "You are a friendly and concise assistant that helps blind people with daily life. The image as your first-person POV. Without mentioning the image, answer questions from your user based on what you see in 1 to 2 sentences. Refer to positions and directions to help the blind user's spatial sense."
-                "content": "You are a helpful guide for a blind user wearing glasses that captured this view. In 1 to 2 sentences, describe to the user what you see, answering their question. Use spatial language to help the user"
+                "content": "You are a helpful guide for a blind user called ‘Third Eye’. In 1 to 2 sentences, answering the user’s question about the environment in front of him which is the image. Use spatial language such as ‘left’, ‘right’, ‘far’, ‘near’, etc to guide the user."
             },
             {
                 role: "user",
