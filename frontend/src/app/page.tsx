@@ -11,6 +11,7 @@ export default function Page() {
     const [image, setImage] = useState<string | null>(null);
 
     const [isMobile, setIsMobile] = useState(false)
+    const [audio, setAudio] = useState<HTMLAudioElement | null>(null);
     useEffect(() => {
         var UA = navigator.userAgent;
         const hasTouchScreen = (
@@ -93,6 +94,13 @@ export default function Page() {
     const handleListen = () => {
         console.log("touched");
         document.getElementsByTagName('video')[0].style.filter = 'brightness(60%)'
+        if (audio) {
+            audio.volume = 0;
+            audio.src = '';
+            audio.srcObject = null;
+            window.URL.revokeObjectURL(audio.src);
+            document.getElementsByClassName('container')[0].removeChild(audio)
+        }
         startRecording();
         // resetTranscript();
         // SpeechRecognition.startListening({
@@ -111,6 +119,9 @@ export default function Page() {
             // if (!image) return;
             if (!camera.current) return;
             await stopRecording();
+            setTimeout(() => {
+                console.log('waiting 1s')
+            }, 1000);
             document.getElementsByTagName('video')[0].style.filter = 'none'
             // @ts-ignore
             const image = camera.current.takePhoto();
@@ -144,6 +155,7 @@ export default function Page() {
             document.getElementsByClassName('container')[0].appendChild(element);
             element.src = blobUrl;
             element.load();
+            setAudio(element);
             element.play();
             element.onended = () => window.URL.revokeObjectURL(blobUrl);
             // return element;
