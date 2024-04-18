@@ -1,5 +1,7 @@
-import React, { useState, useRef } from "react";
+import { useState, useRef } from "react";
+import { useEffect } from "react";
 import {Camera} from "react-camera-pro";
+import { image_analysis } from "./util";
 
 const App = () => {
     const camera = useRef(null);
@@ -11,6 +13,16 @@ const App = () => {
         height: "100%",
         width: "100%",
     }
+
+    useEffect(() => {
+        console.log('image taken');
+        async function run() {
+            const response = await image_analysis(image)
+            console.log(response)
+        }
+        run();
+    }, [image])
+
     return (
         
         <div>
