@@ -4,21 +4,37 @@ import {Camera} from "react-camera-pro";
 const App = () => {
     const camera = useRef(null);
     const [image, setImage] = useState(null);
-
+    const cameraStyle = {
+        position: "fixed",
+        top: 0,
+        left: 0,
+        height: "100%",
+        width: "100%",
+    }
     return (
+        
         <div>
-            <Camera ref={camera}/>
+            <div style={cameraStyle}
+                 onTouchStart={
+                () => {
+                    // works!
+                    console.log("touched");
+                    setImage(camera.current.takePhoto())
+                }}
+                 onTouchEnd={
+                    // works!
+                     () =>{
 
-            // these elements are currently hidden behind the camera, need to change display type
-            <button onClick={() => {
-                if(camera.current) {
-                    const photo = camera.current.takePhoto();
-                    setImage(photo);
-                }
-            }}>Take photo</button>
-            <img src={image} alt='Taken photo'/>
+                    console.log("released");
+                 }}
+
+            >
+                <Camera ref={camera} errorMessages={{noCameraAccessible:"No Camera Accessible", permissionDenied:"Permission Denied"}}/>
+                <img style={{display:"fixed"}} src={image} alt='Taken photo'/>
+            </div>
 
         </div>
+
     );
 }
 
