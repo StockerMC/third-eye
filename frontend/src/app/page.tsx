@@ -213,7 +213,7 @@ export default function Page() {
                         {transcript}
                     </div>
                     <div className='p-2 select-none'>
-                        {listening ? 'Recording' : 'Not Recording'}
+                        {recording ? 'Recording' : 'Not Recording'}
                     </div>
                 </div>
             </div>
