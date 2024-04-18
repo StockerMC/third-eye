@@ -19,7 +19,7 @@ CORS(app, support_credentials=True)
 def test():
     return '<p>hi</p>'
 
-@app.route("/image", methods=['GET'])
+@app.route("/image", methods=['POST'])
 @cross_origin('*')
 def hello_world():
 
