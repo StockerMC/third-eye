@@ -7,7 +7,7 @@ export async function image_analysis(base64_data_url: string, question: string )
     const response = await openai.chat.completions.create({
         model: "gpt-4-turbo",
         temperature: 0.1,
-        // max_tokens: 200,
+        max_tokens: 120,
         messages: [
             {
                 "role": "system",
