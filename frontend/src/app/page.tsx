@@ -1,62 +1,53 @@
 'use client';
 
-import useWindowSize from "use-window-size-v2";
 import 'regenerator-runtime/runtime';
-import { useState, useRef } from "react";
-import { useEffect } from "react";
+import { useState, useRef, useEffect } from "react";
 import {Camera} from "react-camera-pro";
 import useWhisper from "@chengsokdara/use-whisper";
-// @ts-ignore
-
-
-// export function tts(text: string) {
-//     const synth = window.speechSynthesis;
-//     if (synth.speaking) {
-//         synth.cancel();
-//         return;
-//     }
-//     const utterance = new SpeechSynthesisUtterance(text);
-//     let voices = window.speechSynthesis.getVoices();
-//     if (voices.length == 0) {
-//         window.speechSynthesis.onvoiceschanged = () => {
-//             voices = window.speechSynthesis.getVoices();
-//             let voice;
-//             voices.forEach((v, i) => {
-//                 if (v.lang == 'en-CA') {
-//                     voice = v;
-//                     return;
-//                 }
-//             });
-//             if (!voice) {
-//                 throw new Error('voice undefined')
-//             }
-//             utterance.voice = voice;
-//         };
-//     } else {
-//         let voice;
-//         voices.forEach((v, i) => {
-//             if (v.lang == 'en-CA') {
-//                 voice = v;
-//                 return;
-//             }
-//         });
-//         if (!voice) {
-//             throw new Error('voice undefined')
-//         }
-//         utterance.voice = voice;
-//     }
-
-
-//     // utterance.voice = voice;
-//     // const rate = document.getElementById('rate') as any | undefined;
-//     // if (rate) utterance.rate = rate.value;
-//     synth.speak(utterance)
-// }
 
 export default function Page() {
 
     const camera = useRef(null);
     const [image, setImage] = useState<string | null>(null);
+
+    const [isMobile, setIsMobile] = useState(false)
+    useEffect(() => {
+        var UA = navigator.userAgent;
+        const hasTouchScreen = (
+            /\b(BlackBerry|webOS|iPhone|IEMobile)\b/i.test(UA) ||
+            /\b(Android|Windows Phone|iPad|iPod)\b/i.test(UA)
+        ); 
+        console.log(UA)
+        setIsMobile(hasTouchScreen);
+    }, [])
+
+    // const [numberOfCameras, setNumberOfCameras] = useState(0);
+
+    const setNumberOfCameras = (n: number) => {
+        if (n == 2 || window.innerWidth < 700) {
+            // @ts-ignore
+            // camera.current.switchCamera();
+            setIsMobile(true);
+        } else {
+            // @ts-ignore
+            // camera.current.switchCamera();
+        }
+    }
+
+    const [changed, setChanged] = useState(false)
+    // const [changed, setChanged] = useState(false);
+    useEffect(() => {
+        if (changed) return;
+        console.log(window.innerWidth);
+        if (window.innerWidth < 700) {
+            setIsMobile(true);
+            setTimeout(() => {
+                // @ts-ignore
+                camera.current.switchCamera();
+            }, 1000);
+        }
+        setChanged(true);
+    }, [setIsMobile, changed]);
 
     const {
         recording,
@@ -70,19 +61,35 @@ export default function Page() {
         apiKey: process.env.NEXT_PUBLIC_OPENAI_API_KEY, // YOUR_OPEN_AI_TOKEN
       })
 
-    const { width, height } = useWindowSize();
+    const [width, setWidth] = useState(1920);
 
-    // useEffect(() => {
-    //     // console.log(image);
-    //     console.log('photo taken')
-    //     async function run() {
-    //     //   if (image) {
-    //     }
-    //     run();
-    // }, [image])
+    useEffect(() => {
+        setWidth(window.innerWidth);
+        // if (window.innerWidth < 720) {
+        //     // @ts-ignore
+        //     camera.current.switchCamera('environment');
+        // } else {
+        //     // @ts-ignore
+        //     camera.current.switchCamera('user');
+        // }
+    }, [setWidth])
+
+
+    const videoReadyCallback = () => {
+        if (changed) return;
+        if (window.innerWidth < 720) {
+            // @ts-ignore
+            camera.current.switchCamera('environment');
+        } else {
+            // @ts-ignore
+            camera.current.switchCamera('user');
+        }
+        setChanged(true);
+    }
 
     const handleListen = () => {
         console.log("touched");
+        document.getElementsByTagName('video')[0].style.filter = 'brightness(60%)'
         startRecording();
         // resetTranscript();
         // SpeechRecognition.startListening({
@@ -97,6 +104,7 @@ export default function Page() {
         // setImage(camera.current ? camera.current.takePhoto() : null)
         // console.log(transcript);
         stopRecording();
+        document.getElementsByTagName('video')[0].style.filter = 'none'
 
         async function run() {
             // if (!image) return;
@@ -140,7 +148,7 @@ export default function Page() {
 
     return (
 
-        <div className='container'>
+        <div className='container select-none transition-all'>
             <div className='fixed top-0 left-0 h-full w-full'
                  onTouchStart={handleListen}
                 onTouchEnd={handleStop}
@@ -148,14 +156,21 @@ export default function Page() {
                 onMouseUp={handleStop}
 
             >
-                <Camera ref={camera} facingMode={width < 720 ? "environment" : "user"} errorMessages={{noCameraAccessible:"No Camera Accessible", permissionDenied:"Permission Denied"}}/>
+                <Camera ref={camera} numberOfCamerasCallback={setNumberOfCameras} videoReadyCallback={() => {
+                    if (changed) return;
+                    if (isMobile) {
+                        // @ts-ignore
+                        camera.current.switchCamera();
+                    }
+                    setChanged(true);
+                }} facingMode={isMobile ? 'environment': 'user'} errorMessages={{noCameraAccessible:"No Camera Accessible", permissionDenied:"Permission Denied"}}/>
             </div>
             <div className='fixed bottom-0 left-0 w-full bg-black text-white'>
-                <div className='flex justify-between'>
-                    <div className='p-2'>
+                <div className='flex justify-between select-none'>
+                    <div className='p-2 select-none'>
                         {transcript.text}
                     </div>
-                    <div className='p-2'>
+                    <div className='p-2 select-none'>
                         {recording ? 'Recording' : 'Not Recording'}
                     </div>
                 </div>
