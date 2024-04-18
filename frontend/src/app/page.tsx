@@ -146,7 +146,7 @@ export default function Page() {
 
     return (
 
-        <div className='container'>
+        <div className='container select-none'>
             <div className='fixed top-0 left-0 h-full w-full'
                  onTouchStart={handleListen}
                 onTouchEnd={handleStop}
@@ -164,11 +164,11 @@ export default function Page() {
                 }} facingMode={isMobile ? 'environment': 'user'} errorMessages={{noCameraAccessible:"No Camera Accessible", permissionDenied:"Permission Denied"}}/>
             </div>
             <div className='fixed bottom-0 left-0 w-full bg-black text-white'>
-                <div className='flex justify-between'>
-                    <div className='p-2'>
+                <div className='flex justify-between select-none'>
+                    <div className='p-2 select-none'>
                         {transcript.text}
                     </div>
-                    <div className='p-2'>
+                    <div className='p-2 select-none'>
                         {recording ? 'Recording' : 'Not Recording'}
                     </div>
                 </div>
