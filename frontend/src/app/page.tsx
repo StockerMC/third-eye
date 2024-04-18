@@ -144,7 +144,7 @@ export default function Page() {
             body: data
             })
             const text = await response.text();
-            console.log(text)
+            console.log(text);
 
             const blobResponse = await fetch(`/api/tts?text=${encodeURIComponent(text)}`, {
                 method: 'POST',
