@@ -74,8 +74,8 @@ export default function Page() {
     // @ts-ignore
   });
 
-  const startRecording = SpeechRecognition.startListening;
-  const stopRecording = SpeechRecognition.stopListening
+  const startRecording = SpeechRecognition.startListening({continuous: true});
+  const stopRecording = SpeechRecognition.stopListening;
   const recording = listening;
 
     const [width, setWidth] = useState(1920);
