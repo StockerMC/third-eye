@@ -103,6 +103,7 @@ export default function Page() {
 
     const handleListen = () => {
         console.log("touched");
+        resetTranscript();
         // if (recording) return;
         document.getElementsByTagName('video')[0].style.filter = 'brightness(60%)'
         if (audio) {
