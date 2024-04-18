@@ -1,4 +1,5 @@
 keys.py
-.env
+backend/.env
+*.env
 venv/
 __pycache__/
