@@ -68,14 +68,18 @@ export default function Page() {
     transcript,
     listening,
     resetTranscript,
-    browserSupportsSpeechRecognition
-  } = useSpeechRecognition();
+    browserSupportsSpeechRecognition,
+  } = useSpeechRecognition({
+    clearTranscriptOnListen: true,
+    // @ts-ignore
+  });
 
   const startRecording = SpeechRecognition.startListening;
   const stopRecording = SpeechRecognition.stopListening
   const recording = listening;
 
     const [width, setWidth] = useState(1920);
+    const [value, setValue] = useState('')
 
     useEffect(() => {
         setWidth(window.innerWidth);
@@ -120,7 +124,10 @@ export default function Page() {
             setAudio(null);
         }
         Array.from(document.getElementsByTagName('audio')).map(e => e.volume = 0)
-        startRecording();
+        startRecording({
+            continuous: true,
+            language: 'en-US'
+        });
         // resetTranscript();
         // SpeechRecognition.startListening({
         //     continuous: true,
@@ -138,12 +145,12 @@ export default function Page() {
         async function run() {
             // if (!image) return;
             if (!camera.current) return;
+            // @ts-ignore
+            const image = camera.current.takePhoto();
             setTimeout(() => {
                 console.log('waiting 1s')
             }, 1000);
             document.getElementsByTagName('video')[0].style.filter = 'none'
-            // @ts-ignore
-            const image = camera.current.takePhoto();
             const default_question = 'What\'s in front of me?'
             console.log(transcript)
             const question = transcript || default_question;
