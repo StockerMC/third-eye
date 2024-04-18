@@ -138,7 +138,8 @@ export default function Page() {
             console.log(element)
             document.getElementsByClassName('container')[0].appendChild(element);
             element.src = blobUrl;
-            element.play()
+            element.load();
+            element.play();
             element.onended = () => window.URL.revokeObjectURL(blobUrl);
             // return element;
             // todo window.URL.revokeObjectURL(url);
