@@ -19,6 +19,7 @@
     "react-camera-pro": "^1.3.0",
     "react-dom": "^18",
     "regenerator-runtime": "^0.14.1",
+    "use-window-size-v2": "^2.2.5",
     "web-speech-cognitive-services": "^7.1.3"
   },
   "devDependencies": {

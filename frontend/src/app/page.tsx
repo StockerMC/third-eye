@@ -1,5 +1,6 @@
 'use client';
 
+import useWindowSize from "use-window-size-v2";
 import 'regenerator-runtime/runtime';
 import { useState, useRef } from "react";
 import { useEffect } from "react";
@@ -71,26 +72,15 @@ export default function Page() {
     const camera = useRef(null);
     const [image, setImage] = useState<string | null>(null);
 
-    const [width, setWidth] = useState<number>(1920);
     const {
         transcript,
         listening,
         resetTranscript,
         browserSupportsSpeechRecognition
     } = useSpeechRecognition();
-    function handleWindowSizeChange() {
-        setWidth(window.innerWidth);
-    }
-
-    useEffect(() => {
-        setWidth(window.innerWidth)
-        window.addEventListener('resize', handleWindowSizeChange);
-        return () => {
-            window.removeEventListener('resize', handleWindowSizeChange);
-        }
-    }, []);
-
-    const isMobile = width <= 768;
+    
+    
+    const { width, height } = useWindowSize();
 
     useEffect(() => {
         // console.log(image);
@@ -159,7 +149,7 @@ export default function Page() {
                 onMouseUp={handleStop}
 
             >
-                <Camera ref={camera} facingMode={isMobile ? "environment" : "user"} errorMessages={{noCameraAccessible:"No Camera Accessible", permissionDenied:"Permission Denied"}}/>
+                <Camera ref={camera} facingMode={width < 720 ? "environment" : "user"} errorMessages={{noCameraAccessible:"No Camera Accessible", permissionDenied:"Permission Denied"}}/>
             </div>
             <div className='fixed bottom-0 left-0 w-full bg-black text-white'>
                 <div className='flex justify-between'>
