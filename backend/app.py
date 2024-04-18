@@ -55,4 +55,4 @@ def hello_world():
     response = requests.post("https://api.openai.com/v1/chat/completions", headers=headers, json=payload)    
     return response.json()
 
-waitress.serve(app, listen='0.0.0.0:5003')
+# waitress.serve(app, listen='0.0.0.0:5003')
