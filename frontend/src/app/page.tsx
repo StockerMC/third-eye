@@ -5,12 +5,8 @@ import 'regenerator-runtime/runtime';
 import { useState, useRef } from "react";
 import { useEffect } from "react";
 import {Camera} from "react-camera-pro";
+import useWhisper from "@chengsokdara/use-whisper";
 // @ts-ignore
-import createSpeechServicesPonyfill from 'web-speech-cognitive-services';
-import SpeechRecognition, { useSpeechRecognition } from 'react-speech-recognition';
-
-const SUBSCRIPTION_KEY = process.env.NEXT_PUBLIC_AZURE_SUBSCRIPTION_KEY;
-const REGION = 'eastus';
 
 
 // export function tts(text: string) {
@@ -57,38 +53,58 @@ const REGION = 'eastus';
 //     synth.speak(utterance)
 // }
 
-const { SpeechRecognition: AzureSpeechRecognition } = createSpeechServicesPonyfill({
-    credentials: {
-        region: REGION,
-        subscriptionKey: SUBSCRIPTION_KEY,
-    }
-});
-
-SpeechRecognition.applyPolyfill(AzureSpeechRecognition);
-
-window.navigator.mediaDevices.getUserMedia({ audio: true });
 export default function Page() {
 
     const camera = useRef(null);
     const [image, setImage] = useState<string | null>(null);
 
     const {
+        recording,
+        speaking,
+        transcribing,
         transcript,
-        listening,
-        resetTranscript,
-        browserSupportsSpeechRecognition
-    } = useSpeechRecognition();
-    
-    
+        pauseRecording,
+        startRecording,
+        stopRecording,
+      } = useWhisper({
+        apiKey: process.env.NEXT_PUBLIC_OPENAI_API_KEY, // YOUR_OPEN_AI_TOKEN
+      })
+
     const { width, height } = useWindowSize();
 
-    useEffect(() => {
-        // console.log(image);
-        console.log('photo taken')
+    // useEffect(() => {
+    //     // console.log(image);
+    //     console.log('photo taken')
+    //     async function run() {
+    //     //   if (image) {
+    //     }
+    //     run();
+    // }, [image])
+
+    const handleListen = () => {
+        console.log("touched");
+        startRecording();
+        // resetTranscript();
+        // SpeechRecognition.startListening({
+        //     continuous: true,
+        //     language: 'en-US'
+        // });
+    }
+    const handleStop = () => {
+        console.log("released");
+        // SpeechRecognition.abortListening();
+        // // @ts-expect-error
+        // setImage(camera.current ? camera.current.takePhoto() : null)
+        // console.log(transcript);
+        stopRecording();
+
         async function run() {
-          if (image) {
+            // if (!image) return;
+            if (!camera.current) return;
+            // @ts-ignore
+            const image = camera.current.takePhoto();
             const default_question = 'What\'s in front of me?'
-            const question = default_question;
+            const question = transcript.text || default_question;
             console.log("question", question);
             // const res = await fetch(image);
             // const blob = await res.blob();
@@ -98,8 +114,8 @@ export default function Page() {
             // console.log(data.entries())
             // return
             const response = await fetch(`/api/image?question=${encodeURIComponent(question)}`, {
-              method: 'POST',
-              body: data
+            method: 'POST',
+            body: data
             })
             const text = await response.text();
             console.log(text)
@@ -118,26 +134,9 @@ export default function Page() {
             element.onended = () => window.URL.revokeObjectURL(blobUrl);
             // return element;
             // todo window.URL.revokeObjectURL(url);
-          }
         }
         run();
-    }, [image])
-
-    const handleListen = () => {
-        console.log("touched");
-        resetTranscript();
-        SpeechRecognition.startListening({
-            continuous: true,
-            language: 'en-US'
-        });
-    }
-    const handleStop = () => {
-        console.log("released");
-        SpeechRecognition.abortListening();
-        // @ts-expect-error
-        setImage(camera.current ? camera.current.takePhoto() : null)
-        console.log(transcript);
-    }
+      }
 
     return (
 
@@ -154,10 +153,10 @@ export default function Page() {
             <div className='fixed bottom-0 left-0 w-full bg-black text-white'>
                 <div className='flex justify-between'>
                     <div className='p-2'>
-                        {transcript}
+                        {transcript.text}
                     </div>
                     <div className='p-2'>
-                        {listening ? 'Listening' : 'Not Listening'}
+                        {recording ? 'Recording' : 'Not Recording'}
                     </div>
                 </div>
             </div>
