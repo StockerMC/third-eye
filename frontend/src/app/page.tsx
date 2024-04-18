@@ -92,6 +92,7 @@ export default function Page() {
     }
 
     const handleListen = () => {
+        if (recording) return;
         console.log("touched");
         document.getElementsByTagName('video')[0].style.filter = 'brightness(60%)'
         if (audio) {
