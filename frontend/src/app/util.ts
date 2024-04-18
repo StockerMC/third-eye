@@ -6,7 +6,8 @@ export async function image_analysis(base64_data_url: string, question: string )
     const default_question = 'What\'s in this image?'
     const response = await openai.chat.completions.create({
         model: "gpt-4-turbo",
-        // max_tokens: 200,
+        temperature: 0.1,
+        max_tokens: 120,
         messages: [
             {
                 "role": "system",
