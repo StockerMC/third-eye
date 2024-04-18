@@ -1,62 +1,15 @@
 'use client';
 
-import useWindowSize from "use-window-size-v2";
 import 'regenerator-runtime/runtime';
-import { useState, useRef } from "react";
-import { useEffect } from "react";
+import { useState, useRef, useEffect } from "react";
 import {Camera} from "react-camera-pro";
 import useWhisper from "@chengsokdara/use-whisper";
-// @ts-ignore
-
-
-// export function tts(text: string) {
-//     const synth = window.speechSynthesis;
-//     if (synth.speaking) {
-//         synth.cancel();
-//         return;
-//     }
-//     const utterance = new SpeechSynthesisUtterance(text);
-//     let voices = window.speechSynthesis.getVoices();
-//     if (voices.length == 0) {
-//         window.speechSynthesis.onvoiceschanged = () => {
-//             voices = window.speechSynthesis.getVoices();
-//             let voice;
-//             voices.forEach((v, i) => {
-//                 if (v.lang == 'en-CA') {
-//                     voice = v;
-//                     return;
-//                 }
-//             });
-//             if (!voice) {
-//                 throw new Error('voice undefined')
-//             }
-//             utterance.voice = voice;
-//         };
-//     } else {
-//         let voice;
-//         voices.forEach((v, i) => {
-//             if (v.lang == 'en-CA') {
-//                 voice = v;
-//                 return;
-//             }
-//         });
-//         if (!voice) {
-//             throw new Error('voice undefined')
-//         }
-//         utterance.voice = voice;
-//     }
-
-
-//     // utterance.voice = voice;
-//     // const rate = document.getElementById('rate') as any | undefined;
-//     // if (rate) utterance.rate = rate.value;
-//     synth.speak(utterance)
-// }
 
 export default function Page() {
 
     const camera = useRef(null);
     const [image, setImage] = useState<string | null>(null);
+    const [numberOfCameras, setNumberOfCameras] = useState(0);
 
     const {
         recording,
@@ -70,16 +23,32 @@ export default function Page() {
         apiKey: process.env.NEXT_PUBLIC_OPENAI_API_KEY, // YOUR_OPEN_AI_TOKEN
       })
 
-    const { width, height } = useWindowSize();
+    const [width, setWidth] = useState(1920);
 
-    // useEffect(() => {
-    //     // console.log(image);
-    //     console.log('photo taken')
-    //     async function run() {
-    //     //   if (image) {
-    //     }
-    //     run();
-    // }, [image])
+    useEffect(() => {
+        setWidth(window.innerWidth);
+        // if (window.innerWidth < 720) {
+        //     // @ts-ignore
+        //     camera.current.switchCamera('environment');
+        // } else {
+        //     // @ts-ignore
+        //     camera.current.switchCamera('user');
+        // }
+    }, [setWidth])
+
+    const [changed, setChanged] = useState(false)
+
+    const videoReadyCallback = () => {
+        if (changed) return;
+        if (window.innerWidth < 720) {
+            // @ts-ignore
+            camera.current.switchCamera('environment');
+        } else {
+            // @ts-ignore
+            camera.current.switchCamera('user');
+        }
+        setChanged(true);
+    }
 
     const handleListen = () => {
         console.log("touched");
@@ -148,7 +117,7 @@ export default function Page() {
                 onMouseUp={handleStop}
 
             >
-                <Camera ref={camera} facingMode={width < 720 ? "environment" : "user"} errorMessages={{noCameraAccessible:"No Camera Accessible", permissionDenied:"Permission Denied"}}/>
+                <Camera ref={camera} numberOfCamerasCallback={setNumberOfCameras} facingMode={numberOfCameras == 2 ? "environment" : "user"} errorMessages={{noCameraAccessible:"No Camera Accessible", permissionDenied:"Permission Denied"}}/>
             </div>
             <div className='fixed bottom-0 left-0 w-full bg-black text-white'>
                 <div className='flex justify-between'>
