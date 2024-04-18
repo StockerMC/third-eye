@@ -4,6 +4,7 @@ import {Camera} from "react-camera-pro";
 const App = () => {
     const camera = useRef(null);
     const [image, setImage] = useState(null);
+    const [style, setStyle] = useState("light");
     const cameraStyle = {
         position: "fixed",
         top: 0,
@@ -19,18 +20,19 @@ const App = () => {
                 () => {
                     // works!
                     console.log("touched");
+
                     setImage(camera.current.takePhoto())
                 }}
                  onTouchEnd={
-                    // works!
-                     () =>{
+                     // works!
+                     () => {
 
-                    console.log("released");
-                 }}
+                         console.log("released");
+                     }
+            }
 
             >
-                <Camera ref={camera} errorMessages={{noCameraAccessible:"No Camera Accessible", permissionDenied:"Permission Denied"}}/>
-                <img style={{display:"fixed"}} src={image} alt='Taken photo'/>
+                <Camera ref={camera} facingMode={"environment"} errorMessages={{noCameraAccessible:"No Camera Accessible", permissionDenied:"Permission Denied"}}/>
             </div>
 
         </div>
