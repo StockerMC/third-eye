@@ -1,8 +1,15 @@
-from flask import Flask, request
-import waitress
+
 import base64
+import waitress
 import requests
-from keys import OPENAI_API_KEY
+import os
+
+from dotenv import load_dotenv
+from flask import Flask, request
+
+load_dotenv()
+
+OPENAI_API_KEY = os.environ['OPENAI_API_KEY']
 
 app = Flask(__name__)
 

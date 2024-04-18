@@ -1,7 +1,4 @@
-<<<<<<< HEAD
-=======
-backend/venv/
->>>>>>> 50c26723e8e31b5d2d946536498737a71d02e4e9
 keys.py
+.env
 venv/
 __pycache__/
