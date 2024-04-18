@@ -8,7 +8,6 @@ import SpeechRecognition, { useSpeechRecognition } from 'react-speech-recognitio
 export default function Page() {
 
     const camera = useRef(null);
-    const [image, setImage] = useState<string | null>(null);
 
     const [isMobile, setIsMobile] = useState(false)
     const [audio, setAudio] = useState<HTMLAudioElement | null>(null);
@@ -58,37 +57,10 @@ export default function Page() {
     // @ts-ignore
     });
 
-  const startRecording = () => SpeechRecognition.startListening({continuous: true, 
-    language: 'en-US'});
-  const stopRecording = SpeechRecognition.stopListening;
-  const recording = listening;
-
-    const [width, setWidth] = useState(1920);
-    const [value, setValue] = useState('')
-
-    useEffect(() => {
-        setWidth(window.innerWidth);
-        // if (window.innerWidth < 720) {
-        //     // @ts-ignore
-        //     camera.current.switchCamera('environment');
-        // } else {
-        //     // @ts-ignore
-        //     camera.current.switchCamera('user');
-        // }
-    }, [setWidth])
-
-
-    const videoReadyCallback = () => {
-        if (changed) return;
-        if (window.innerWidth < 720) {
-            // @ts-ignore
-            camera.current.switchCamera('environment');
-        } else {
-            // @ts-ignore
-            camera.current.switchCamera('user');
-        }
-        setChanged(true);
-    }
+    const startRecording = () => SpeechRecognition.startListening({continuous: true, 
+        language: 'en-US'});
+    const stopRecording = SpeechRecognition.stopListening;
+    const recording = listening;
 
     const handleListen = () => {
         console.log("touched");
