@@ -1,7 +1,5 @@
-
-import base64
 import waitress
-import requests
+import grequests
 import os
 
 from dotenv import load_dotenv
@@ -57,8 +55,8 @@ def hello_world():
         "max_tokens": 200
     }
 
-    response = requests.post("https://api.openai.com/v1/chat/completions", headers=headers, json=payload)    
+    response = grequests.map([grequests.post("https://api.openai.com/v1/chat/completions", headers=headers, json=payload)])[0]
     data = response.json()
     return data['choices'][0]['message']['content']
 
-# waitress.serve(app, listen='0.0.0.0:5003')
+waitress.serve(app, listen='0.0.0.0:5003')
