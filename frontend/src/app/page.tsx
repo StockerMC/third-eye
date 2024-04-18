@@ -9,15 +9,17 @@ export default function Page() {
 
     const camera = useRef(null);
     const [image, setImage] = useState<string | null>(null);
+    const [isMobile, setIsMobile] = useState(false)
     // const [numberOfCameras, setNumberOfCameras] = useState(0);
 
     const setNumberOfCameras = (n: number) => {
         if (n == 2) {
             // @ts-ignore
-            camera.current.switchCamera();
+            // camera.current.switchCamera();
+            setIsMobile(true);
         } else {
             // @ts-ignore
-            camera.current.switchCamera();
+            // camera.current.switchCamera();
         }
     }
 
@@ -127,7 +129,7 @@ export default function Page() {
                 onMouseUp={handleStop}
 
             >
-                <Camera ref={camera} numberOfCamerasCallback={setNumberOfCameras} facingMode='user' errorMessages={{noCameraAccessible:"No Camera Accessible", permissionDenied:"Permission Denied"}}/>
+                <Camera ref={camera} numberOfCamerasCallback={setNumberOfCameras} facingMode={isMobile ? 'environment': 'user'} errorMessages={{noCameraAccessible:"No Camera Accessible", permissionDenied:"Permission Denied"}}/>
             </div>
             <div className='fixed bottom-0 left-0 w-full bg-black text-white'>
                 <div className='flex justify-between'>
