@@ -154,7 +154,14 @@ export default function Page() {
                 onMouseUp={handleStop}
 
             >
-                <Camera ref={camera} numberOfCamerasCallback={setNumberOfCameras} facingMode={isMobile ? 'environment': 'user'} errorMessages={{noCameraAccessible:"No Camera Accessible", permissionDenied:"Permission Denied"}}/>
+                <Camera ref={camera} numberOfCamerasCallback={setNumberOfCameras} videoReadyCallback={() => {
+                    if (changed) return;
+                    if (isMobile) {
+                        // @ts-ignore
+                        camera.current.switchCamera();
+                    }
+                    setChanged(true);
+                }} facingMode={isMobile ? 'environment': 'user'} errorMessages={{noCameraAccessible:"No Camera Accessible", permissionDenied:"Permission Denied"}}/>
             </div>
             <div className='fixed bottom-0 left-0 w-full bg-black text-white'>
                 <div className='flex justify-between'>
