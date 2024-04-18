@@ -152,14 +152,22 @@ export default function Page() {
             const blob = await blobResponse.blob();
             console.log(blob)
             const blobUrl = window.URL.createObjectURL(blob);
-            const element = document.createElement('audio')
-            console.log(element)
-            document.getElementsByClassName('container')[0].appendChild(element);
-            element.src = blobUrl;
-            element.load();
-            setAudio(element);
-            element.play();
-            element.onended = () => window.URL.revokeObjectURL(blobUrl);
+            // const element = document.createElement('audio')
+            // console.log(element)
+            // document.getElementsByClassName('container')[0].appendChild(element);
+            // element.src = blobUrl;
+            // element.load();
+            // setAudio(element);
+            // element.play();
+            const soundEffect = new Audio();
+            soundEffect.autoplay = true;
+
+            // onClick of first interaction on page before I need the sounds
+            // (This is a tiny MP3 file that is silent and extremely short - retrieved from https://bigsoundbank.com and then modified)
+            soundEffect.src = blobUrl;
+
+
+            soundEffect.onended = () => window.URL.revokeObjectURL(blobUrl);
             // return element;
             // todo window.URL.revokeObjectURL(url);
         }
