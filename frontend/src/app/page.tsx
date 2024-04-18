@@ -96,11 +96,13 @@ export default function Page() {
         console.log("touched");
         document.getElementsByTagName('video')[0].style.filter = 'brightness(60%)'
         if (audio) {
+            audio.pause()
             audio.volume = 0;
             audio.src = '';
             audio.srcObject = null;
             window.URL.revokeObjectURL(audio.src);
             document.getElementsByClassName('container')[0].removeChild(audio)
+            setAudio(null);
         }
         Array.from(document.getElementsByTagName('audio')).map(e => e.volume = 0)
         startRecording();
@@ -161,6 +163,7 @@ export default function Page() {
             // element.play();
             const soundEffect = new Audio();
             soundEffect.autoplay = true;
+            setAudio(soundEffect)
 
             // onClick of first interaction on page before I need the sounds
             // (This is a tiny MP3 file that is silent and extremely short - retrieved from https://bigsoundbank.com and then modified)
