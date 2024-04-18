@@ -58,7 +58,10 @@ export default function Page() {
         startRecording,
         stopRecording,
       } = useWhisper({
-        apiKey: process.env.NEXT_PUBLIC_OPENAI_API_KEY, // YOUR_OPEN_AI_TOKEN
+        apiKey: process.env.NEXT_PUBLIC_OPENAI_API_KEY, // YOUR_OPEN_AI_TOKEN,
+        autoTranscribe: true,
+        streaming: true,
+        timeSlice: 1000
       })
 
     const [width, setWidth] = useState(1920);
@@ -103,16 +106,18 @@ export default function Page() {
         // // @ts-expect-error
         // setImage(camera.current ? camera.current.takePhoto() : null)
         // console.log(transcript);
-        stopRecording();
-        document.getElementsByTagName('video')[0].style.filter = 'none'
 
         async function run() {
             // if (!image) return;
             if (!camera.current) return;
+            await stopRecording();
+            document.getElementsByTagName('video')[0].style.filter = 'none'
             // @ts-ignore
             const image = camera.current.takePhoto();
             const default_question = 'What\'s in front of me?'
+            console.log(transcript.text)
             const question = transcript.text || default_question;
+            transcript.text = ''
             console.log("question", question);
             // const res = await fetch(image);
             // const blob = await res.blob();
