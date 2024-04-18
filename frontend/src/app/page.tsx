@@ -13,7 +13,7 @@ export default function Page() {
     // const [numberOfCameras, setNumberOfCameras] = useState(0);
 
     const setNumberOfCameras = (n: number) => {
-        if (n == 2) {
+        if (n == 2 || window.innerWidth < 700) {
             // @ts-ignore
             // camera.current.switchCamera();
             setIsMobile(true);
@@ -22,6 +22,21 @@ export default function Page() {
             // camera.current.switchCamera();
         }
     }
+
+    const [changed, setChanged] = useState(false)
+    // const [changed, setChanged] = useState(false);
+    useEffect(() => {
+        if (changed) return;
+        console.log(window.innerWidth);
+        if (window.innerWidth < 700) {
+            setIsMobile(true);
+            setTimeout(() => {
+                // @ts-ignore
+                camera.current.switchCamera();
+            }, 1000);
+        }
+        setChanged(true);
+    }, [setIsMobile, changed]);
 
     const {
         recording,
@@ -48,7 +63,6 @@ export default function Page() {
         // }
     }, [setWidth])
 
-    const [changed, setChanged] = useState(false)
 
     const videoReadyCallback = () => {
         if (changed) return;
