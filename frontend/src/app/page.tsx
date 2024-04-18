@@ -63,6 +63,7 @@ export default function Page() {
     const recording = listening;
 
     const handleListen = () => {
+        // setAudio(soundEffect)
         console.log("touched");
         resetTranscript();
         document.getElementsByTagName('video')[0].style.filter = 'brightness(60%)'
@@ -82,7 +83,11 @@ export default function Page() {
         Array.from(document.getElementsByTagName('audio')).map(e => e.volume = 0)
         startRecording();
     }
+    const [cooking, setCooking] = useState(false);
     const handleStop = () => {
+        setCooking(true);
+        const soundEffect = new Audio('ding.mp3');
+        soundEffect.autoplay = true;
         console.log("released");
         stopRecording();
 
@@ -115,14 +120,16 @@ export default function Page() {
             console.log(blob)
             const blobUrl = window.URL.createObjectURL(blob);
             const soundEffect = new Audio();
+            setCooking(false);
             soundEffect.autoplay = true;
             setAudio(soundEffect)
+            resetTranscript();
 
             // onClick of first interaction on page before I need the sounds
             // (This is a tiny MP3 file that is silent and extremely short - retrieved from https://bigsoundbank.com and then modified)
             soundEffect.src = blobUrl;
 
-
+            
             soundEffect.onended = () => window.URL.revokeObjectURL(blobUrl);
         }
         run();
@@ -130,7 +137,10 @@ export default function Page() {
 
     return (
 
-        <div className='container select-none transition-all p-8'>
+        <div className='container w-full h-full select-none transition-all p-8'>
+            <div className={'w-screen h-screen flex text-center justify-center items-center z-[999] ' + (cooking ? 'block' : 'hidden')}>
+                <img className='w-[20vw] h-auto z-50' src="https://i.stack.imgur.com/kOnzy.gif" alt="loading" />
+            </div>
             <div className='fixed top-0 left-0 h-full w-full'
                  onTouchStart={handleListen}
                 onTouchEnd={handleStop}
