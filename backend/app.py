@@ -26,21 +26,28 @@ def hello_world():
     # Getting the base64 string
     # base64_image = encode_image(image_path)
     base64_image = request.args.get('data')
+    question = request.args.get('question')
 
     headers = {
         "Content-Type": "application/json",
         "Authorization": f"Bearer {OPENAI_API_KEY}"
     }
 
+    default = 'What\'s in this image?'
+
     payload = {
         "model": "gpt-4-turbo",
         "messages": [
+            {
+                "role": "system",
+                "content": "You are a friendly and concise assistant that helps blind people with daily life. Answer questions from your user quickly and concisely."
+            },
             {
             "role": "user",
             "content": [
                 {
                 "type": "text",
-                "text": "What's in this image?"
+                "text": f"{question or default}"
                 },
                 {
                 "type": "image_url",
