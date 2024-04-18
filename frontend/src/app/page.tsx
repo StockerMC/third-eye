@@ -112,7 +112,11 @@ export default function Page() {
             audio.src = '';
             audio.srcObject = null;
             window.URL.revokeObjectURL(audio.src);
-            document.getElementsByClassName('container')[0].removeChild(audio)
+            try {
+                document.getElementsByClassName('container')[0].removeChild(audio)
+            } catch(e) {
+                
+            }
             setAudio(null);
         }
         Array.from(document.getElementsByTagName('audio')).map(e => e.volume = 0)
