@@ -58,9 +58,37 @@ export default function Page() {
     // @ts-ignore
     });
 
-    const startRecording = SpeechRecognition.startListening;
-    const stopRecording = SpeechRecognition.stopListening
-    const recording = listening;
+  const startRecording = () => SpeechRecognition.startListening({continuous: true, 
+    language: 'en-US'});
+  const stopRecording = SpeechRecognition.stopListening;
+  const recording = listening;
+
+    const [width, setWidth] = useState(1920);
+    const [value, setValue] = useState('')
+
+    useEffect(() => {
+        setWidth(window.innerWidth);
+        // if (window.innerWidth < 720) {
+        //     // @ts-ignore
+        //     camera.current.switchCamera('environment');
+        // } else {
+        //     // @ts-ignore
+        //     camera.current.switchCamera('user');
+        // }
+    }, [setWidth])
+
+
+    const videoReadyCallback = () => {
+        if (changed) return;
+        if (window.innerWidth < 720) {
+            // @ts-ignore
+            camera.current.switchCamera('environment');
+        } else {
+            // @ts-ignore
+            camera.current.switchCamera('user');
+        }
+        setChanged(true);
+    }
 
     const handleListen = () => {
         console.log("touched");
@@ -80,10 +108,7 @@ export default function Page() {
             setAudio(null);
         }
         Array.from(document.getElementsByTagName('audio')).map(e => e.volume = 0)
-        startRecording({
-            continuous: true,
-            language: 'en-US'
-        });
+        startRecording();
     }
     const handleStop = () => {
         console.log("released");
