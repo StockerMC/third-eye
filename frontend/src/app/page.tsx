@@ -190,7 +190,7 @@ export default function Page() {
 
     return (
 
-        <div className='container select-none transition-all'>
+        <div className='container select-none transition-all p-8'>
             <div className='fixed top-0 left-0 h-full w-full'
                  onTouchStart={handleListen}
                 onTouchEnd={handleStop}
@@ -207,7 +207,7 @@ export default function Page() {
                     setChanged(true);
                 }} facingMode={isMobile ? 'environment': 'user'} errorMessages={{noCameraAccessible:"No Camera Accessible", permissionDenied:"Permission Denied"}}/>
             </div>
-            <div className='fixed bottom-0 left-0 w-full bg-black text-white'>
+            <div className='fixed bottom-0 left-0 w-full bg-black text-white mb-4'>
                 <div className='flex justify-between select-none'>
                     <div className='p-2 select-none'>
                         {transcript}
