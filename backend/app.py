@@ -7,17 +7,22 @@ import os
 from dotenv import load_dotenv
 from flask import Flask, request
 
+from flask_cors import CORS, cross_origin
+
 load_dotenv()
 
 OPENAI_API_KEY = os.environ['OPENAI_API_KEY']
 
 app = Flask(__name__)
+CORS(app, support_credentials=True)
 
 @app.route("/", methods=['GET'])
+@cross_origin('*')
 def test():
     return '<p>hi</p>'
 
 @app.route("/image", methods=['GET'])
+@cross_origin('*')
 def hello_world():
 
     # Getting the base64 string
