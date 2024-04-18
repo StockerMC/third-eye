@@ -9,7 +9,18 @@ export default function Page() {
 
     const camera = useRef(null);
     const [image, setImage] = useState<string | null>(null);
+
     const [isMobile, setIsMobile] = useState(false)
+    useEffect(() => {
+        var UA = navigator.userAgent;
+        const hasTouchScreen = (
+            /\b(BlackBerry|webOS|iPhone|IEMobile)\b/i.test(UA) ||
+            /\b(Android|Windows Phone|iPad|iPod)\b/i.test(UA)
+        ); 
+        console.log(UA)
+        setIsMobile(hasTouchScreen);
+    }, [])
+
     // const [numberOfCameras, setNumberOfCameras] = useState(0);
 
     const setNumberOfCameras = (n: number) => {
