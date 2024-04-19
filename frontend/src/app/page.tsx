@@ -137,9 +137,9 @@ export default function Page() {
 
     return (
 
-        <div className='container w-screen h-screen select-none transition-all p-8'>
-            <div className={'w-full h-full flex text-center justify-center items-center z-[999] ' + (cooking ? 'block' : 'hidden')}>
-                <img className='w-[20vw] h-auto z-50' src="https://i.stack.imgur.com/kOnzy.gif" alt="loading" />
+        <div className='container w-screen h-screen select-none transition-all p-8 overflow-hidden'>
+            <div className={'w-screen h-full flex text-center justify-center items-center z-[999] ' + (cooking ? 'block' : 'hidden')}>
+                <img className='w-[15vw] h-auto z-50' src="https://i.stack.imgur.com/kOnzy.gif" alt="loading" />
             </div>
             <div className='fixed top-0 left-0 h-full w-full'
                  onTouchStart={handleListen}
