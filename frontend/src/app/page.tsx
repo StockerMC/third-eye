@@ -137,8 +137,8 @@ export default function Page() {
 
     return (
 
-        <div className='container w-full h-full select-none transition-all p-8'>
-            <div className={'w-screen h-screen flex text-center justify-center items-center z-[999] ' + (cooking ? 'block' : 'hidden')}>
+        <div className='container w-screen h-screen select-none transition-all p-8'>
+            <div className={'w-full h-full flex text-center justify-center items-center z-[999] ' + (cooking ? 'block' : 'hidden')}>
                 <img className='w-[20vw] h-auto z-50' src="https://i.stack.imgur.com/kOnzy.gif" alt="loading" />
             </div>
             <div className='fixed top-0 left-0 h-full w-full'
